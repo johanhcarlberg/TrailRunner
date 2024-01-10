@@ -1,7 +1,6 @@
 package se.iths;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 

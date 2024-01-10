@@ -230,6 +230,20 @@ Krav - Löprundorna kan sparas lokalt i arbetsminnet, i t.ex. en Array eller en 
         Lägger till en instansvariabel för att lagra DatabaseAPI-objektet och tilldelar variabeln i konstruktorn. Lägger till anrop till createRecord i addActivity.
         Testet är nu grönt.
 
-
-
-
+    Skapar test för att hämta aktiviteter från databasen med hjälp av id.
+        Inser att det kan vara bra att skapa en setup-metod för det mockade databas-objektet.
+            Skapar en privat variabel för databas-objektet.
+            Skapar en setup-metod med @beforeAll-annotering som skapar ett nytt mockat databas-objekt och tilldelar det till variabeln ovan.
+        Fortsätter med att skapa testet, skriver en when..thenReturn-sats för readRecord som returnerar en aktivitet baserat på id.
+        Inser att databas-api-klassen använder Record. Verkar inte som att java 1.8 har fullt stöd för records, uppdaterar java-version i pom.
+        Skapar ny testklass för att skapa test att skapa ActivityRecord.
+            Skapar ny record-klass ActivityRecord.
+            Testet för att skapa ActivityRecord failar eftersom konstruktorn för ActivityRecord inte stämmer.
+            Uppdaterar konstruktorn för ActivityRecord så att det motsvarar testdatan, testet kompilerar inte för att jag försöker använda variabelnamn istället för
+            de autoskapade getter-metoderna från record.
+            Ändrar till att använda getter-metoder, testet är grönt.
+        Går tillbaka till testet för readRecord, ändrar så att thenReturn returnerar ett ActivityRecord.
+        Testet kompilerar fortfarande inte eftersom metoden för att hämta Activity från databasen inte finns i ActivityController.
+        Skapar metoden getActivityById i ActivityController, returnerar en statiskt skapad aktivitet, testet är fortfarande rött eftersom testet kontrollerar 
+        att metoden i databas-api-klassen har anropats, vilket den inte har i nuläget.
+        Ändrar i getActivityById så att den anropar metoden i DatabaseAPI-klassen.
