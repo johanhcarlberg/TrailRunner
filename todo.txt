@@ -212,6 +212,24 @@ Krav - Löprundorna kan sparas lokalt i arbetsminnet, i t.ex. en Array eller en 
     och att den ställer till det med testen när man kör alla test.
     Tar bort static från idCounter, testen är gröna.
 
+    ---------------------
+
+    Mockning av api för databas
+
+    Skapar en ny klass för tester mot databasen (ActivityControllerTest)
+        Skapar test för att lägga till aktiviteter
+        I testet skapas en mock-databas genom att använda mock-metoden från mockito med DatabaseAPI-klassen som argument.
+        Testet skapar en ny instans av ActivityController och skickar med databas-objektet.
+        Testet mockar createRecord från DatabaseAPI genom att använda when och thenReturn-metoderna från mockito.
+        Testet anropar addActivity från ActivityController för att lägga till en aktivitet
+        Testet kontrollerar att createRecord har anropats med korrekta parametrar genom verify-metoden från mockito.
+
+        Testet failar eftersom ActivityController inte är implementerad.
+        Skapar ActivityController-klassen med en konstruktor som tar emot ett DatabaseAPI-objekt. Testet kompilerar fortfarande inte eftersom addActivity-metoden inte finns.
+        Skapar en tom addActivity-metod som tar emot ett Activity-objekt som parameter. Testet kompilerar men är rött eftersom metoden inte anropar DatabaseAPI.
+        Lägger till en instansvariabel för att lagra DatabaseAPI-objektet och tilldelar variabeln i konstruktorn. Lägger till anrop till createRecord i addActivity.
+        Testet är nu grönt.
+
 
 
 
