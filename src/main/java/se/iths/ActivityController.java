@@ -3,12 +3,8 @@ package se.iths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.jacoco.report.check.Limit;
 
 public class ActivityController {
     DatabaseAPI db;
