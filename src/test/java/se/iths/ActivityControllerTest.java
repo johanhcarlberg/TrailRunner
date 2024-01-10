@@ -1,19 +1,26 @@
 package se.iths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class ActivityControllerTest {
     private static DatabaseAPI db;
@@ -48,5 +55,61 @@ public class ActivityControllerTest {
         assertEquals(10.0, activityFromDb.distance);
         assertEquals(60, activityFromDb.time.getSeconds());
         assertEquals(new GregorianCalendar(2024, 1, 1), activityFromDb.date);
+    }
+
+    @Test
+    public void canGetRecordIds() {
+        ActivityController activityController = new ActivityController(db);
+        List<String> idList = new ArrayList<>();
+        idList.add("1");
+        idList.add("2");
+
+        when(db.getRecordIDs()).thenReturn(idList);
+        List<String> idListFromDb = activityController.getActivityIDs();
+
+        verify(db).getRecordIDs();
+        assertTrue(idListFromDb.contains(idList.get(0)));
+        assertTrue(idListFromDb.contains(idList.get(1)));
+    }
+
+    @Test
+    public void canDeleteRecord() {
+        ActivityController activityController = new ActivityController(db);
+
+        when(db.deleteRecord("1")).thenReturn(true);
+        activityController.deleteActivity("1");
+        verify(db).deleteRecord("1");
+
+    }
+
+    @Test
+    public void canFilterActivities() {
+        ActivityController activityController = new ActivityController(db);
+
+        List<String> idList = new ArrayList<>();
+        idList.add("1");
+        idList.add("2");
+        idList.add("3");
+        when(db.getRecordIDs()).thenReturn(idList);
+
+        List<ActivityRecord> activities = new ArrayList<>();
+        activities.add(new ActivityRecord("1", 20.0, 60, new GregorianCalendar(2024, 0, 1)));
+        activities.add(new ActivityRecord("2", 30.0, 120, new GregorianCalendar(2024, 0, 2)));
+        activities.add(new ActivityRecord("3", 35.0, 120, new GregorianCalendar(2024, 0, 2)));
+
+        when(db.readRecord(anyString())).thenAnswer(new Answer<ActivityRecord>() {
+            @Override
+            public ActivityRecord answer(InvocationOnMock invocation) throws Throwable {
+                return activities.stream().filter(a -> a.id().equals(invocation.getArgument(0))).findAny().get();
+            }
+        });
+
+        List<Activity> filteredActivities = activityController.getActivitiesByDistance(25);
+
+        verify(db).getRecordIDs();
+        verify(db, times(3)).readRecord(anyString());
+
+        assertEquals(2, filteredActivities.size());
+        assertEquals(2, filteredActivities.stream().filter(a -> a.distance >= 25).collect(Collectors.toList()).size());
     }
 }

@@ -247,3 +247,44 @@ Krav - Löprundorna kan sparas lokalt i arbetsminnet, i t.ex. en Array eller en 
         Skapar metoden getActivityById i ActivityController, returnerar en statiskt skapad aktivitet, testet är fortfarande rött eftersom testet kontrollerar 
         att metoden i databas-api-klassen har anropats, vilket den inte har i nuläget.
         Ändrar i getActivityById så att den anropar metoden i DatabaseAPI-klassen.
+        Ändrar i getActivityById så att den skapar ett Activity-objekt utifrån ActivityRecord-objektet som hämtas från databasen.
+        Testet är nu grönt.
+
+    Skapar test för att hämta alla id på aktiviteter.
+        Skapar en lista med id som skall returneras, lägger till två id i den.
+        Lägger till listan i thenReturn().
+        Lägger till ett anrop till en metod i ActivityController som hämtar alla id på aktiviteter.
+        Lägger till en verify-sats som kollar att getRecordIDs har anropats i DatabaseAPI-klassen.
+        Lägger till två assertTrue som anropar .contains() på listan som hämtats från databasen för att kolla att innehållet är korrekt.
+        Testet kompilerar inte eftersom metoden i ActivityController inte finns.
+        Skapar metoden i ActivityController, returnerar en lista med idn med hjälp av Arrays.asList. Testet är rött eftersom metoden i DatabaseAPI inte anropas.
+        Ändrar metoden i ActivityController så den returnerar värdet från getRecordIDs i DatabaseAPI. Testet är grönt.
+    
+    Skapar test för att ta bort aktivitet ur databasen.
+        Testet kontrollerar att deleteRecord har anropats.
+        Testet anropar deleteActivity i ActivityController.
+        Testet kompilerar inte eftersom metoden i ActivityController inte finns.
+        Skapar metoden i ActivityController, testet kompilerar men är rött eftersom metoden inte anropar metod i DatabaseAPI.
+        Lägger till anrop till DatabaseAPI, testet är grönt.
+
+    Skapar test för att filtrera aktiviteter baserat på distans
+        Testet har en lista med id och en lista med ActivityRecord. 
+        Listan med id används i thenReturn när getRecordIDs anropas.
+        Listan med ActivityRecord används när readRecord anropas genom att använda Answer-klassen i mockito. Använder override av answer-metoden 
+        för att returnera ett ActivityRecord ur listan baserat på id som skickas in med hjälp av anyString(). 
+        Testet hämtar sedan den filtrerade listan genom metoden getActivitiesByDistance
+        Testet använder assertEquals för att jämföra storleken på listan från getActivitiesByDistance med förväntat resultat.
+        Testet verifierar att både getRecordIDs och readRecord har anropats, det förväntar sig också att readRecord anropats så många gånger som det finns ActivityRecords i listan.
+        Testet kompilerar inte eftersom metoden getActivitiesByDistance inte finns.
+        Skapar metoden och returnerar en tom lista. Testet är rött eftersom det inte anropar databasen.
+        Lägger till hämtning av id genom anrop till getRecordIDs, testet är fortfarande rött eftersom readRecord inte anropas.
+        Ändrar i answer-metoden så att den använder filter och findAny för att hämta rätt ActivityRecord från listan.
+        Testet är fortfarande rött eftersom metoden bara anropar readRecord och getRecordIDs utan att göra något med resultatet, därav är listan som kommer tillbaka fortfarande tom.
+        Lägger till assertion som kontrollerar att de returnerade aktiviteterna faktiskt har rätt distans.
+        Returnerar en lista med två manuellt skapade aktiviteter där en av distanserna är fel, testet är rött och klagar på att den bara har en aktivitet som uppfyller distansen.
+        Ändrar distansen på en av aktiviteterna som returneras så att båda uppfyller kravet, testet är grönt.
+        
+        Refaktorerar getActivitiesByDistance så att den filtrerar det faktiska resultatet från databasen.
+            Lägger till ActivityRecords som hämtas i en egen lista.
+            Använder stream() på ovanstående lista för att först anropa map() för att göra om ActivityRecords till Activity, sedan filter() för att filtrera distans
+            slutligen collect() för att konvertera till en lista. Resultatet returneras. Testet är grönt.
