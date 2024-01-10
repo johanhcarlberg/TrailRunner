@@ -18,15 +18,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 public class ActivityControllerTest {
-    private static DatabaseAPI db;
+    private DatabaseAPI db;
 
-    @BeforeAll
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         db = mock(DatabaseAPI.class);
     }
 

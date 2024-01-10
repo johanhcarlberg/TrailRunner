@@ -288,3 +288,6 @@ Krav - Löprundorna kan sparas lokalt i arbetsminnet, i t.ex. en Array eller en 
             Lägger till ActivityRecords som hämtas i en egen lista.
             Använder stream() på ovanstående lista för att först anropa map() för att göra om ActivityRecords till Activity, sedan filter() för att filtrera distans
             slutligen collect() för att konvertera till en lista. Resultatet returneras. Testet är grönt.
+
+    Ändrar setup-metoden från beforeAll till beforeEach eftersom det verkar bli något strul när man kör alla tester istället för
+    individuella tester när man skapar db-objektet i beforeAll.
