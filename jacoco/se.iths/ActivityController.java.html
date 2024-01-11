@@ -3,47 +3,46 @@
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.jacoco.report.check.Limit;
-
 public class ActivityController {
     DatabaseAPI db;
-<span class="fc" id="L15">    public ActivityController(DatabaseAPI db) {</span>
-<span class="fc" id="L16">        this.db = db;</span>
-<span class="fc" id="L17">    }</span>
+<span class="fc" id="L11">    public ActivityController(DatabaseAPI db) {</span>
+<span class="fc" id="L12">        this.db = db;</span>
+<span class="fc" id="L13">    }</span>
 
     public void addActivity(Activity activity) {
-<span class="fc" id="L20">        db.createRecord(activity.id, activity.distance, (int) activity.time.toSeconds(), LocalDate.ofInstant(activity.date.toInstant(), ZoneId.systemDefault()));</span>
-<span class="fc" id="L21">    }</span>
+<span class="fc bfc" id="L16" title="All 2 branches covered.">        if (db.getRecordIDs().contains(activity.id)) {</span>
+<span class="fc" id="L17">            throw new IllegalArgumentException(&quot;Error: Duplicate ID&quot;);</span>
+        }
+<span class="fc" id="L19">        db.createRecord(activity.id, activity.distance, (int) activity.time.toSeconds(), LocalDate.ofInstant(activity.date.toInstant(), ZoneId.systemDefault()));</span>
+<span class="fc" id="L20">    }</span>
 
     public Activity getActivityById(String id) {
-<span class="fc" id="L24">        ActivityRecord activityRecord = (ActivityRecord) db.readRecord(id);</span>
-<span class="fc" id="L25">        return new Activity(activityRecord.id(), activityRecord.distance(), (int) activityRecord.time(), activityRecord.date());</span>
+<span class="fc" id="L23">        ActivityRecord activityRecord = (ActivityRecord) db.readRecord(id);</span>
+<span class="fc" id="L24">        return new Activity(activityRecord.id(), activityRecord.distance(), (int) activityRecord.time(), activityRecord.date());</span>
     }
 
     public List&lt;String&gt; getActivityIDs() {
-<span class="fc" id="L29">        return db.getRecordIDs();</span>
+<span class="fc" id="L28">        return db.getRecordIDs();</span>
     }
 
     public void deleteActivity(String id) {
-<span class="fc" id="L33">        db.deleteRecord(id);</span>
-<span class="fc" id="L34">    }</span>
+<span class="fc" id="L32">        db.deleteRecord(id);</span>
+<span class="fc" id="L33">    }</span>
 
     public List&lt;Activity&gt; getActivitiesByDistance(double distance) {
-<span class="fc" id="L37">        List&lt;String&gt; activityIDs = db.getRecordIDs();</span>
-<span class="fc" id="L38">        List&lt;ActivityRecord&gt; activityRecords = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (String id : activityIDs) {</span>
-<span class="fc" id="L40">            activityRecords.add((ActivityRecord) db.readRecord(id));</span>
-        }
+<span class="fc" id="L36">        List&lt;String&gt; activityIDs = db.getRecordIDs();</span>
+<span class="fc" id="L37">        List&lt;ActivityRecord&gt; activityRecords = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (String id : activityIDs) {</span>
+<span class="fc" id="L39">            activityRecords.add((ActivityRecord) db.readRecord(id));</span>
+<span class="fc" id="L40">        }</span>
 
-<span class="fc" id="L43">        return activityRecords.stream()</span>
-<span class="fc" id="L44">        .map(a -&gt; new Activity(a.id(), a.distance(), (int) a.time(), a.date()))</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        .filter(a -&gt; a.distance &gt;= distance)</span>
-<span class="fc" id="L46">        .collect(Collectors.toList());</span>
+<span class="fc" id="L42">        return activityRecords.stream()</span>
+<span class="fc" id="L43">        .map(a -&gt; new Activity(a.id(), a.distance(), (int) a.time(), a.date()))</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        .filter(a -&gt; a.distance &gt;= distance)</span>
+<span class="fc" id="L45">        .collect(Collectors.toList());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,6 +1,7 @@
 package se.iths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -109,5 +110,25 @@ public class ActivityControllerTest {
 
         assertEquals(2, filteredActivities.size());
         assertEquals(2, filteredActivities.stream().filter(a -> a.distance >= 25).collect(Collectors.toList()).size());
+    }
+
+    @Test
+    public void addingDuplicateIDsThrowsException() {
+        ActivityController activityController = new ActivityController(db);
+        Activity activity = new Activity("3", 10.0, 60, new GregorianCalendar(2024, 1, 1));
+
+
+        List<String> idList = new ArrayList<>();
+        idList.add("1");
+        idList.add("2");
+        idList.add("3");
+        when(db.getRecordIDs()).thenReturn(idList);
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+          activityController.addActivity(activity);  
+        });
+
+        assertEquals("Error: Duplicate ID", e.getMessage());
+        
     }
 }

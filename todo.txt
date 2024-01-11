@@ -291,3 +291,12 @@ Krav - Löprundorna kan sparas lokalt i arbetsminnet, i t.ex. en Array eller en 
 
     Ändrar setup-metoden från beforeAll till beforeEach eftersom det verkar bli något strul när man kör alla tester istället för
     individuella tester när man skapar db-objektet i beforeAll.
+
+        Skapar test för att kontrollera att två aktiviteter med samma id inte kan läggas till i databasen
+            Testet lägger till en when..thenReturn() för getRecordIDs som returnerar en lista med IDn.
+            Testet kontrollerar med hjälp av en assertThrows att ett IllegalArgumentException kastas när addActivity anropas med en aktivitet som har ett id som redan existerar.
+            Testet kontrollerar också med hjälp av en assertEquals att meddelandet på det exception som kastas motsvarar testdata.
+            Testet failar eftersom metoden just nu inte kastar något exception.
+            Skriver en if-sats i addActivity som kollar om getRecordIDs innehåller id på aktiviteten som skickas med som parameter. Kastar i så fall ett exception.
+            Testet är fortfarande rött, det går igenom assertThrows men fastnar på assertEquals för meddelandet eftersom inget meddelande lagts till när exception kastas.
+            Ändrar i addActivity så att rätt meddelande skickas med i konstruktorn för IllegalArgumentException. Testet är nu grönt.

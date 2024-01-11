@@ -13,6 +13,9 @@ public class ActivityController {
     }
 
     public void addActivity(Activity activity) {
+        if (db.getRecordIDs().contains(activity.id)) {
+            throw new IllegalArgumentException("Error: Duplicate ID");
+        }
         db.createRecord(activity.id, activity.distance, (int) activity.time.toSeconds(), LocalDate.ofInstant(activity.date.toInstant(), ZoneId.systemDefault()));
     }
 
